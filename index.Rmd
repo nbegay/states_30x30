@@ -198,9 +198,9 @@ renderPlotly({
       text = ~hover,
       locations = ~state_abb,
       color = ~pub_cost, 
-      colors = 'YlOrRd'
+      colors = 'YlGnBu'
     ) %>%
-    colorbar(title = "Amount Spent") %>%
+    colorbar(title = "insert measurement") %>%
     layout(geo = g)
 })
 ```
