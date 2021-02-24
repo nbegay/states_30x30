@@ -19,52 +19,64 @@ library(shiny)
 library(tibble)
 library(googlesheets4)
 
+# make googlesheets4 not try to authenticate
+gs4_deauth()
 
 # Read in dataset
 
-dat <- read.csv("NWRS_refined.csv")
+data_url <- "https://docs.google.com/spreadsheets/d/117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4/edit#gid=0"
+read_sheet(data_url)
+
+ssid <- as_sheets_id(data_url)
+unclass(ssid)
+
+ssid <- "117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4"
+read_sheet(ssid)
+
+# read in data
+load_data <- function() {
+  read_sheet(ssid)
+}
+
+data_30x30 <- load_data()
+
+
 
 # Get number of NWRs in each state
-nwrs_state <- aggregate(
-  dat$nwr_name ~ dat$state_territory, 
-  FUN = function(x) length(unique(x))
-)
+legislation_state <- aggregate(
+ data_30x30$legislation ~ data_30x30$state, 
+  FUN = sum)
 
 
 # Get total pub spending in each state
-cost_state <- aggregate(
-  dat$pub_fws_purchase_cost ~ dat$state_territory, 
+executive_state <- aggregate(
+ data_30x30$executive_order ~ data_30x30$state, 
   FUN = sum)
 
-# change from int to numeric
+# get total state guidance
+ stateguidance <- aggregate(
+ data_30x30$state_guidance ~ data_30x30$state,
+  FUN = sum)
 
 
-# Clean up column naming for both datasets
-names(nwrs_state) <- c("state", "refuge_count")
-names(cost_state) <- c("state", "pub_cost")
+# Clean up column naming for three datasets
+names(legislation_state) <- c("state", "legislation")
+names(executive_state) <- c("state", "executive_order")
+names(stateguidance) <- c("state", "state_guidance")
 
 # Join datasets into one
-state_data <- left_join(cost_state, nwrs_state, by = "state")
+state_data <- left_join(legislation_state, executive_state, by = "state")
 
-# Import state abbreviations (needed for map later)
+
+#Import state abbreviations (needed for map later)
 st_abbrev <- read.csv("st_abb.csv")
 
 # Join state abbreviations into state_data dataset
 state_data <- left_join(state_data, st_abbrev, by = "state")
 
-# Get total number of refuge acres in each state
-acres <- aggregate(
-  dat$total_acres ~ dat$state_territory, 
-  FUN = sum)
-names(acres) <- c("state", "total_acres")
-
-
-# Join acres to state_data
-state_data <- left_join(state_data, acres, by = "state")
-
 
 # Add column to calculate dollars spent per acre in each state and round to two decimal places
-state_data$dollar_acre <- format(round(state_data$pub_cost / state_data$total_acres, 2), nsmall = 2)
+#state_data$dollar_acre <- format(round(state_data$pub_cost / state_data$total_acres, 2), nsmall = 2)
 
 
 ```
@@ -75,20 +87,20 @@ Column {data-width=220}
 
 ### Background
 
-Insert INFO [The U.S. Fish and Wildlife Service](https://www.fws.gov/) provides expenditure data reports each year in 59 pages of dense PDFs. We have extracted the 2019 Annual Lands Report data and make this information readily available. (Data from the [U.S. Fish and Wildlife Service](https://www.fws.gov/refuges/land/PDF/2019_Annual_Report_Data_Tables(508-Compliant).pdf), as of 9/30/2019). 
+The number of proposed policy measures aligning with the 30x30 framework continues to rise in the United States. This map shows which states have proposed legislation, executive orders, or state guidances. Data will be updated based on new information.
 
 <br> 
 
-INFO
+More reading from Defenders CCI - [Getting to 30x30 Guidelines for Decision Makers](https://defenders.org/sites/default/files/2020-07/getting-to-30x30-guidelines-for-decision-makers.pdf). 
 
 
 
-### Overall U.S. Numbers
+### Other info...
 
 
 <div style='padding:3px; margin-bottom: 12px; background-color:#FF8400; color:white; border-radius:2px; font-size: 1.2em'>
-Total refuge land area
-```{r pct_overall}
+Info...
+```{r pct_overall, eval=FALSE}
 #assign to a variable
 formatted_number <- formatC(sum(state_data$total_acres), format = "d", big.mark=",")
 
@@ -104,8 +116,8 @@ tags$p(
 
 <div style='padding-left:5px; padding-right:50px;'>
  
-_Public lands and waters - acres purchased by FWS_:
-```{r n_intra}
+_link to googlesheet??_
+```{r n_intra, eval=FALSE}
 formatted_number1 <- formatC(sum(dat$pub_fws_purchase_acres), format = "d", big.mark=",")
 
 tags$p(
@@ -116,52 +128,11 @@ tags$p(
 
 
 
-_Public lands and waters - cost of purchases by FWS_:
-```{r n_intro}
-
-formatted_number16 <- formatC(sum(dat$pub_fws_purchase_cost), format("d"), big.mark = ",")
-
-tags$p(
-  style = "font-size:1.5em; font-weight:700;", "$", formatted_number16
-)
-
-```
-
-
-<hr>
-
-_Easements - acres purchased by FWS_:
-```{r}
-formatted_number2 <- formatC(sum(dat$ease_fws_purchase_acres), format = "d", big.mark = ",")
-
-tags$p(
-  style = "font-size:1.5em; font-weight:700;",
-  formatted_number2, "ac"
-)
-```
-
-_Easements - cost of purchases by FWS_: 
-```{r}
-
-
-formatted_number4 <- formatC(sum(dat$ease_fws_purchase_cost), format = "d", big.mark = ",")
-
-tags$p(
-  style = "font-size:1.5em; font-weight:700;", "$",
-  formatted_number4
-)
-```
 
 <hr>
 
 
-```{r n_list, eval=FALSE}
-# Total land purchase cost (since 2016):
-tags$p(
-  style = "font-size:1.5em; font-weight:700;",
-  "$", sum(state_data$pub_cost)
-)
-```
+
 </div>
 
 <br>
@@ -173,15 +144,10 @@ Column {data-width=800}
 ### 30x30 Bills by State <span style="font-size:small">(hover over state for info)</span>
 
 ```{r map, echo=FALSE}
-# signif(x, digits = )
-formatted_number0 <- formatC(state_data$pub_cost, format = "d", big.mark = ",")
 
-sig1 <- signif(state_data$pub_cost, digits = 3)
-
-state_data$hover <- with(state_data, paste0(
-  "<span style='font-size:larger;font-weight:bold'>", "Total Spending in ", state, 
-  ": $", formatted_number0, "</span><br>", 
-  "<b>Total amount spent per acre of refuge land: $</b>", dollar_acre, "</span><br>", "<b># of refuges: </b>", refuge_count
+state_data$hover <- with(state_data(
+  "<span style='font-size:larger;font-weight:bold'>", state, 
+  ":", data_30x30$total, "</span><br>", 
 ))
 
 g <- list(
@@ -192,61 +158,20 @@ g <- list(
 )
   
 renderPlotly({
-  plot_geo(state_data, locationmode = 'USA-states', hoverlabel = "none") %>%
+  hover <- state_data$state
+  plot_geo(ssid, locationmode = 'USA-states', hoverlabel = "none") %>%
     add_trace(
       z = ~sig1, 
       text = ~hover,
       locations = ~state_abb,
-      color = ~pub_cost, 
+      # color = ~, 
       colors = 'YlGnBu'
     ) %>%
-    colorbar(title = "insert measurement") %>%
+    colorbar(title = "Score") %>%
     layout(geo = g)
 })
 ```
 
 
 
-
-
-
-```{r data_table, echo = FALSE}
-
-#NWRS_refined table in OSF... but keep separate RDS files to pull data for app
-
-#show <- distinct(intra_occ, scientific, state, .keep_all = TRUE)
-#grp <- data_frame(
-#  scientific = dat$scientific,
-#  taxon = dat$taxon
-#) %>% distinct()
-
-#show <- left_join(show, grp, by = "scientific")
-#show <- with(show, tibble(
-#  state = state, 
-#  common = common, 
-#  scientific = scientific, 
-#  taxon = taxon.x #,
-  # URL = paste0("<a target='_blank' href='", scientific_name_url, "'>ECOS Link</a>")
-#))
-
-#tags$div(
-#  style = "padding:20px; background-color:white;",
-#  DT::renderDataTable({
-#    DT::datatable(
-#      show,
-#      filter = "top",
-#      escape = FALSE,
-#      extensions = c("Buttons"),
-#      options = list(
-#        rownames = FALSE,
-#        paging = FALSE,
-#        dom = 'Bfrtip',
-#        buttons = c('copy', 'csv', 'excel'),
-#        scrollX = TRUE,
-#        scrollY = TRUE
-#      )
-#    )
-#  })
-#)
-```
 
