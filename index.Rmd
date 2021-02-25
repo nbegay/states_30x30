@@ -27,7 +27,9 @@ gs4_deauth()
 data_url <- "mttps://docs.google.com/spreadsheets/d/117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4/edit#gid=0"
 read_sheet(data_url)
 data_30x30 <- read_sheet(data_url)
-data_30x30$total <- data_30x30$legislation + data_30x30$executive_order +
+data_30x30$total <- 0.5*data_30x30$leg_intro + 
+  0.5*data_30x30$leg_passed + 
+  data_30x30$executive_order +
   data_30x30$state_guidance
 
 #Import state abbreviations (needed for map later)
@@ -41,7 +43,7 @@ Column {data-width=220}
 
 ### Background
 
-The number of proposed policy measures elevating the 30x30 framework continues to rise in the United States. This map shows which states have proposed legislation, executive orders, or state guidance. 
+The number of proposed policy measures elevating the 30x30 framework continues to rise in the United States. This map shows which states have proposed or passed legislation, executive orders, or state guidance. 
 
 More reading from Defenders CCI - [Getting to 30x30 Guidelines for Decision Makers](https://defenders.org/sites/default/files/2020-07/getting-to-30x30-guidelines-for-decision-makers.pdf). 
 
@@ -51,6 +53,10 @@ More reading from Defenders CCI - [Getting to 30x30 Guidelines for Decision Make
 
 
 <div class="orange-infobox"> No. states with 30x30 measures<br><span class="big-num">`r sum(state_data$total > 0)`</span></div>
+
+<div class="plain-infobox"> No. states w/ leg introduced<br><span class="small-big-num">`r sum(state_data$leg_intro > 0)`</span></div>
+
+<div class="plain-infobox"> No. states w/ leg passed <br><span class="small-big-num">`r sum(state_data$leg_passed > 0)`</span></div>
 
 
 ### Scoring Guide
@@ -69,7 +75,8 @@ Column {data-width=800}
 state_data$hover <- paste0( 
   "<span style='font-size:larger;font-weight:bold'>", state_data$state, "</span><br>",
   "# measures: ", state_data$total, "<br>",
-  "Legislation: ", if_else(state_data$legislation > 0, "Yes", "No"), "<br>",
+  "Legislation introduced: ", if_else(state_data$leg_intro > 0, "Yes", "No"), "<br>",
+  "Legislation passed: ", if_else(state_data$leg_passed> 0, "Yes", "No"), "<br>",
   "Executive Order: ", if_else(state_data$executive_order > 0, "Yes", "No"), "<br>",
   "Policy Guidance: ", if_else(state_data$state_guidance > 0, "Yes", "No"), "<br>"
 )
