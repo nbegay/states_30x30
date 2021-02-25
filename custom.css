@@ -203,3 +203,17 @@ a:visited {
 .control-label {
   font-weight: 600;
 }
+
+.orange-infobox {
+  background-color:#FF8400;
+  border-radius:2px;  
+  color: #fff !important;
+  font-size: 1.1em;
+  padding:3px;
+  margin-bottom: 12px;
+}
+
+.big-num {
+  font-size: 2em;
+  font-weight: 900;
+}

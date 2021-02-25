@@ -36,7 +36,6 @@ state_data <- left_join(data_30x30, st_abbrev, by = "state")
 
 ```
 
-
 Column {data-width=220}
 -----------------------------------------------------------------------
 
@@ -44,42 +43,15 @@ Column {data-width=220}
 
 The number of proposed policy measures elevating the 30x30 framework continues to rise in the United States. This map shows which states have proposed legislation, executive orders, or state guidance. 
 
-<br> 
-
 More reading from Defenders CCI - [Getting to 30x30 Guidelines for Decision Makers](https://defenders.org/sites/default/files/2020-07/getting-to-30x30-guidelines-for-decision-makers.pdf). 
 
 
 
-### Other info...
+### Summary stats
 
 
-<div style='padding:3px; margin-bottom: 12px; background-color:#FF8400; color:white; border-radius:2px; font-size: 1.2em'>
-Info...
-```{r pct_overall, eval=FALSE}
-n_states <- sum(state_data$total > 0)
+<div class="orange-infobox"> No. states with 30x30 measures<br><span class="big-num">`r sum(state_data$total > 0)`</span></div>
 
-tags$p(
-  style = "font-size:1.5em; font-weight:600; color:white",
-  n_states, "states"
-)
-```
-</div>
-<!-- <br> -->
-
-<div style='padding-left:5px; padding-right:50px;'>
- 
-_link to googlesheet??_
-```{r n_intra, eval=FALSE}
-formatted_number1 <- formatC(sum(dat$pub_fws_purchase_acres), format = "d", big.mark=",")
-
-tags$p(
-  style = "font-size:1.5em; font-weight:700;",
-  formatted_number1, "ac"
-)
-```
-<hr>
-</div>
-<br>
 
 
 Column {data-width=800}
