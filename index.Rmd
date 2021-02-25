@@ -28,52 +28,8 @@ data_url <- "mttps://docs.google.com/spreadsheets/d/117Dl9WW_ldmBiO3BN1tDhhp4lQ0
 read_sheet(data_url)
 data_30x30 <- read_sheet(data_url)
 
-# ssid <- as_sheets_id(data_url)
-# unclass(ssid)
-# 
-# ssid <- "117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4"
-# read_sheet(ssid)
-# 
-# # read in data
-# load_data <- function() {
-#   read_sheet(ssid)
-# }
-
-# data_30x30 <- load_data()
-
-
-
-# Get number of states
-# legislation_state <- aggregate(
-#  data_30x30$legislation ~ data_30x30$state, 
-#   FUN = sum)
-
-
-# Get total pub spending in each state
-# executive_state <- aggregate(
-#  data_30x30$executive_order ~ data_30x30$state, 
-#   FUN = sum)
-
-# get total state guidance
- # stateguidance <- aggregate(
- # data_30x30$state_guidance ~ data_30x30$state,
- #  FUN = sum)
-
-
-# # Clean up column naming for three datasets
-# names(legislation_state) <- c("state", "legislation")
-# names(executive_state) <- c("state", "executive_order")
-# names(stateguidance) <- c("state", "state_guidance")
-# 
-# # Join datasets into one
-# state_data <- left_join(legislation_state, executive_state, by = "state")
-
-
 #Import state abbreviations (needed for map later)
 st_abbrev <- read.csv("st_abb.csv")
-
-# Join state abbreviations into state_data dataset
-# state_data <- left_join(state_data, st_abbrev, by = "state")
 state_data <- left_join(data_30x30, st_abbrev, by = "state")
 
 ```
@@ -84,7 +40,7 @@ Column {data-width=220}
 
 ### Background
 
-The number of proposed policy measures aligning with the 30x30 framework continues to rise in the United States. This map shows which states have proposed legislation, executive orders, or state guidances. Data will be updated based on new information.
+The number of proposed policy measures elevating the 30x30 framework continues to rise in the United States. This map shows which states have proposed legislation, executive orders, or state guidance. 
 
 <br> 
 
