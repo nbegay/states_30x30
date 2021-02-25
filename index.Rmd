@@ -24,60 +24,57 @@ gs4_deauth()
 
 # Read in dataset
 
-data_url <- "https://docs.google.com/spreadsheets/d/117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4/edit#gid=0"
+data_url <- "mttps://docs.google.com/spreadsheets/d/117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4/edit#gid=0"
 read_sheet(data_url)
+data_30x30 <- read_sheet(data_url)
 
-ssid <- as_sheets_id(data_url)
-unclass(ssid)
+# ssid <- as_sheets_id(data_url)
+# unclass(ssid)
+# 
+# ssid <- "117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4"
+# read_sheet(ssid)
+# 
+# # read in data
+# load_data <- function() {
+#   read_sheet(ssid)
+# }
 
-ssid <- "117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4"
-read_sheet(ssid)
-
-# read in data
-load_data <- function() {
-  read_sheet(ssid)
-}
-
-data_30x30 <- load_data()
+# data_30x30 <- load_data()
 
 
 
-# Get number of NWRs in each state
-legislation_state <- aggregate(
- data_30x30$legislation ~ data_30x30$state, 
-  FUN = sum)
+# Get number of states
+# legislation_state <- aggregate(
+#  data_30x30$legislation ~ data_30x30$state, 
+#   FUN = sum)
 
 
 # Get total pub spending in each state
-executive_state <- aggregate(
- data_30x30$executive_order ~ data_30x30$state, 
-  FUN = sum)
+# executive_state <- aggregate(
+#  data_30x30$executive_order ~ data_30x30$state, 
+#   FUN = sum)
 
 # get total state guidance
- stateguidance <- aggregate(
- data_30x30$state_guidance ~ data_30x30$state,
-  FUN = sum)
+ # stateguidance <- aggregate(
+ # data_30x30$state_guidance ~ data_30x30$state,
+ #  FUN = sum)
 
 
-# Clean up column naming for three datasets
-names(legislation_state) <- c("state", "legislation")
-names(executive_state) <- c("state", "executive_order")
-names(stateguidance) <- c("state", "state_guidance")
-
-# Join datasets into one
-state_data <- left_join(legislation_state, executive_state, by = "state")
+# # Clean up column naming for three datasets
+# names(legislation_state) <- c("state", "legislation")
+# names(executive_state) <- c("state", "executive_order")
+# names(stateguidance) <- c("state", "state_guidance")
+# 
+# # Join datasets into one
+# state_data <- left_join(legislation_state, executive_state, by = "state")
 
 
 #Import state abbreviations (needed for map later)
 st_abbrev <- read.csv("st_abb.csv")
 
 # Join state abbreviations into state_data dataset
-state_data <- left_join(state_data, st_abbrev, by = "state")
-
-
-# Add column to calculate dollars spent per acre in each state and round to two decimal places
-#state_data$dollar_acre <- format(round(state_data$pub_cost / state_data$total_acres, 2), nsmall = 2)
-
+# state_data <- left_join(state_data, st_abbrev, by = "state")
+state_data <- left_join(data_30x30, st_abbrev, by = "state")
 
 ```
 
@@ -145,10 +142,10 @@ Column {data-width=800}
 
 ```{r map, echo=FALSE}
 
-state_data$hover <- with(state_data(
-  "<span style='font-size:larger;font-weight:bold'>", state, 
-  ":", data_30x30$total, "</span><br>", 
-))
+state_data$hover <- paste0( 
+  "<span style='font-size:larger;font-weight:bold'>", state_data$state, " ", 
+  ":", state_data$total, "</span><br>"
+)
 
 g <- list(
   scope = 'usa',
@@ -159,9 +156,9 @@ g <- list(
   
 renderPlotly({
   hover <- state_data$state
-  plot_geo(ssid, locationmode = 'USA-states', hoverlabel = "none") %>%
+  plot_geo(state_data, locationmode = 'USA-states', hoverlabel = "none") %>%
     add_trace(
-      z = ~sig1, 
+      z = ~total, 
       text = ~hover,
       locations = ~state_abb,
       # color = ~, 
