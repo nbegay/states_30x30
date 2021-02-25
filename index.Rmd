@@ -93,7 +93,7 @@ renderPlotly({
       # color = ~, 
       colors = 'YlGnBu'
     ) %>%
-    colorbar(title = "Engagement") %>%
+    colorbar(title = "Level of Engagement") %>%
     layout(geo = g)
 })
 ```
