@@ -53,6 +53,12 @@ More reading from Defenders CCI - [Getting to 30x30 Guidelines for Decision Make
 <div class="orange-infobox"> No. states with 30x30 measures<br><span class="big-num">`r sum(state_data$total > 0)`</span></div>
 
 
+### Scoring Guide
+1 - Introduction of bill, EO, or state guidance
+<hr>
+2 - Document passed
+<hr>
+
 Column {data-width=800}
 -----------------------------------------------------------------------
 
