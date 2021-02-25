@@ -27,6 +27,8 @@ gs4_deauth()
 data_url <- "mttps://docs.google.com/spreadsheets/d/117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4/edit#gid=0"
 read_sheet(data_url)
 data_30x30 <- read_sheet(data_url)
+data_30x30$total <- data_30x30$legislation + data_30x30$executive_order +
+  data_30x30$state_guidance
 
 #Import state abbreviations (needed for map later)
 st_abbrev <- read.csv("st_abb.csv")
@@ -54,14 +56,11 @@ More reading from Defenders CCI - [Getting to 30x30 Guidelines for Decision Make
 <div style='padding:3px; margin-bottom: 12px; background-color:#FF8400; color:white; border-radius:2px; font-size: 1.2em'>
 Info...
 ```{r pct_overall, eval=FALSE}
-#assign to a variable
-formatted_number <- formatC(sum(state_data$total_acres), format = "d", big.mark=",")
-
-
+n_states <- sum(state_data$total > 0)
 
 tags$p(
   style = "font-size:1.5em; font-weight:600; color:white",
-  formatted_number, "acres"
+  n_states, "states"
 )
 ```
 </div>
@@ -78,16 +77,8 @@ tags$p(
   formatted_number1, "ac"
 )
 ```
-
-
-
-
 <hr>
-
-
-
 </div>
-
 <br>
 
 
