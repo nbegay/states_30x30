@@ -53,7 +53,6 @@ More reading from Defenders CCI - [Getting to 30x30 Guidelines for Decision Make
 <div class="orange-infobox"> No. states with 30x30 measures<br><span class="big-num">`r sum(state_data$total > 0)`</span></div>
 
 
-
 Column {data-width=800}
 -----------------------------------------------------------------------
 
@@ -62,8 +61,11 @@ Column {data-width=800}
 ```{r map, echo=FALSE}
 
 state_data$hover <- paste0( 
-  "<span style='font-size:larger;font-weight:bold'>", state_data$state, " ", 
-  ":", state_data$total, "</span><br>"
+  "<span style='font-size:larger;font-weight:bold'>", state_data$state, "</span><br>",
+  "# measures: ", state_data$total, "<br>",
+  "Legislation: ", if_else(state_data$legislation > 0, "Yes", "No"), "<br>",
+  "Executive Order: ", if_else(state_data$executive_order > 0, "Yes", "No"), "<br>",
+  "Policy Guidance: ", if_else(state_data$state_guidance > 0, "Yes", "No"), "<br>"
 )
 
 g <- list(
@@ -74,7 +76,7 @@ g <- list(
 )
   
 renderPlotly({
-  hover <- state_data$state
+  # hover <- state_data$state
   plot_geo(state_data, locationmode = 'USA-states', hoverlabel = "none") %>%
     add_trace(
       z = ~total, 
