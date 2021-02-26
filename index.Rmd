@@ -47,16 +47,17 @@ The number of proposed policy measures elevating the 30x30 framework continues t
 
 More reading from Defenders CCI - [Getting to 30x30 Guidelines for Decision Makers](https://defenders.org/sites/default/files/2020-07/getting-to-30x30-guidelines-for-decision-makers.pdf). 
 
-
-
 ### Summary stats
-
 
 <div class="orange-infobox"> No. states with 30x30 measures<br><span class="big-num">`r sum(state_data$total > 0)`</span></div>
 
-<div class="plain-infobox"> No. states w/ legislation introduced<br><span class="small-big-num">`r sum(state_data$leg_intro > 0)`</span></div>
+Legislation introduced: <span class="small-big-num">`r sum(state_data$leg_intro > 0)` states</span>
 
-<div class="plain-infobox"> No. states w/ legislation passed <br><span class="small-big-num">`r sum(state_data$leg_passed > 0)`</span></div>
+Legislation passed: <span class="small-big-num">`r sum(state_data$leg_passed > 0)` `r if_else(sum(state_data$leg_passed) == 0, "states", if_else(sum(state_data$leg_passed) == 1, "state", "states"))`</span>
+
+Executive orders: <span class="small-big-num">`r sum(state_data$executive_order > 0)` `r if_else(sum(state_data$executive_order) == 0, "states", if_else(sum(state_data$executive_order) == 1, "state", "states"))`</span>
+
+Policy guidance: <span class="small-big-num">`r sum(state_data$state_guidance > 0)` `r if_else(sum(state_data$state_guidance) == 0, "states", if_else(sum(state_data$state_guidance) == 1, "state", "states"))`</span>
 
 
 
