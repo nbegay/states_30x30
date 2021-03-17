@@ -50,6 +50,8 @@ The number of proposed policy measures elevating the 30x30 framework continues t
 
 More reading from Defenders CCI - [Getting to 30x30 Guidelines for Decision Makers](https://defenders.org/sites/default/files/2020-07/getting-to-30x30-guidelines-for-decision-makers.pdf). 
 
+Have updates to add? Write to us at: cci@defenders.org
+
 ### Summary stats
 
 <div class="orange-infobox"> No. states with 30x30 measures<br><span class="big-num">`r sum(state_data$total > 0)`</span></div>
