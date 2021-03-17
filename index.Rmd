@@ -18,6 +18,7 @@ library(rvest)
 library(shiny)
 library(tibble)
 library(googlesheets4)
+library(kableExtra)
 
 # make googlesheets4 not try to authenticate
 gs4_deauth()
@@ -110,3 +111,9 @@ Data
 
 Column {data-width=800}
 -----------------------------------------------------------------------
+
+```{r datatable, echo = FALSE}
+data_30x30 %>%
+  kbl() %>%
+  kable_styling()
+```
