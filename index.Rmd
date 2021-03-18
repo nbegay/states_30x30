@@ -112,6 +112,9 @@ Data
 Column {data-width=800}
 -----------------------------------------------------------------------
 
+<div style="margin-left:25%;font-size:larger">The data for this app can be viewed [on Google Sheets](https://docs.google.com/spreadsheets/d/117Dl9WW_ldmBiO3BN1tDhhp4lQ0T2-h1x210rctQ2b4/edit?usp=sharing) or here:</div>
+----
+
 ```{r datatable, echo = FALSE}
 to_show <- data_30x30[, 2:8]
 names(to_show) <- c(
