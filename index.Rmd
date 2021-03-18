@@ -113,7 +113,17 @@ Column {data-width=800}
 -----------------------------------------------------------------------
 
 ```{r datatable, echo = FALSE}
-data_30x30 %>%
+to_show <- data_30x30[, 2:8]
+names(to_show) <- c(
+  "State",
+  "Leg. introduced",
+  "Leg. passed",
+  "E.O.",
+  "State guidance",
+  "Total",
+  "URL"
+)
+to_show %>%
   kbl() %>%
   kable_styling()
 ```
